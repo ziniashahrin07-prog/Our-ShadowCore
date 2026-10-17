@@ -1,0 +1,6 @@
+{
+  "name": "Our ShadowCore",
+  "description": "A private romantic diary shared by exactly two partners. Two hearts, one story, a thousand little moments.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

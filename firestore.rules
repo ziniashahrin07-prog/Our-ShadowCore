@@ -1,0 +1,252 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny all unknown collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAuthorizedPartner() {
+      return isSignedIn() &&
+        request.auth.token.email_verified == true &&
+        (
+          request.auth.token.email.lower() == 'ziniashahrin07@gmail.com' ||
+          request.auth.token.email.lower() == 'partner2@example.com'
+        );
+    }
+
+    // Diagnostic connection test endpoint
+    match /test/{docId} {
+      allow get: if isSignedIn();
+    }
+
+    // 1. Diary Entries Collection
+    function isValidDiaryEntry(data) {
+      return data.keys().hasAll(['id', 'title', 'date', 'text', 'authorUid', 'authorEmail', 'authorName', 'createdAt', 'updatedAt']) &&
+        data.keys().hasOnly(['id', 'title', 'date', 'text', 'authorUid', 'authorEmail', 'authorName', 'createdAt', 'updatedAt']) &&
+        data.id is string && data.id.size() >= 1 && data.id.size() <= 128 &&
+        data.title is string && data.title.size() >= 1 && data.title.size() <= 200 &&
+        data.date is string && data.date.matches('^\\d{4}-\\d{2}-\\d{2}$') &&
+        data.text is string && data.text.size() >= 1 && data.text.size() <= 50000 &&
+        data.authorUid is string && data.authorUid == request.auth.uid &&
+        data.authorEmail is string && data.authorEmail.size() <= 128 &&
+        data.authorName is string && data.authorName.size() <= 100 &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
+    match /diary_entries/{entryId} {
+      allow get, list: if isAuthorizedPartner();
+
+      allow create: if isAuthorizedPartner() &&
+        isValidId(entryId) &&
+        isValidDiaryEntry(incoming()) &&
+        incoming().id == entryId &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time;
+
+      allow update: if isAuthorizedPartner() &&
+        isValidId(entryId) &&
+        existing().authorUid == request.auth.uid &&
+        isValidDiaryEntry(incoming()) &&
+        incoming().id == existing().id &&
+        incoming().authorUid == existing().authorUid &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['title', 'date', 'text', 'authorName', 'updatedAt']);
+
+      allow delete: if isAuthorizedPartner() &&
+        isValidId(entryId) &&
+        existing().authorUid == request.auth.uid;
+    }
+
+    // 2. Letters to You Collection
+    function isValidLetter(data) {
+      return data.keys().hasAll(['id', 'title', 'letterDate', 'content', 'senderUid', 'senderEmail', 'senderName', 'recipientName', 'paperStyle', 'isSealed', 'createdAt', 'updatedAt']) &&
+        data.keys().hasOnly(['id', 'title', 'letterDate', 'content', 'senderUid', 'senderEmail', 'senderName', 'recipientName', 'paperStyle', 'isSealed', 'createdAt', 'updatedAt']) &&
+        data.id is string && data.id.size() >= 1 && data.id.size() <= 128 &&
+        data.title is string && data.title.size() >= 1 && data.title.size() <= 200 &&
+        data.letterDate is string && data.letterDate.matches('^\\d{4}-\\d{2}-\\d{2}$') &&
+        data.content is string && data.content.size() >= 1 && data.content.size() <= 60000 &&
+        data.senderUid is string && data.senderUid == request.auth.uid &&
+        data.senderEmail is string && data.senderEmail.size() <= 128 &&
+        data.senderName is string && data.senderName.size() <= 100 &&
+        data.recipientName is string && data.recipientName.size() <= 100 &&
+        data.paperStyle is string && data.paperStyle.size() <= 50 &&
+        data.isSealed is bool &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
+    match /letters/{letterId} {
+      allow get, list: if isAuthorizedPartner();
+
+      allow create: if isAuthorizedPartner() &&
+        isValidId(letterId) &&
+        isValidLetter(incoming()) &&
+        incoming().id == letterId &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time;
+
+      allow update: if isAuthorizedPartner() &&
+        isValidId(letterId) &&
+        existing().senderUid == request.auth.uid &&
+        isValidLetter(incoming()) &&
+        incoming().id == existing().id &&
+        incoming().senderUid == existing().senderUid &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['title', 'letterDate', 'content', 'senderName', 'recipientName', 'paperStyle', 'isSealed', 'updatedAt']);
+
+      allow delete: if isAuthorizedPartner() &&
+        isValidId(letterId) &&
+        existing().senderUid == request.auth.uid;
+    }
+
+    // 3. Memories Collection
+    function isValidMemory(data) {
+      return data.keys().hasAll(['id', 'title', 'memoryDate', 'description', 'location', 'photoUrl', 'photoCaption', 'authorUid', 'authorEmail', 'authorName', 'createdAt', 'updatedAt']) &&
+        data.keys().hasOnly(['id', 'title', 'memoryDate', 'description', 'location', 'photoUrl', 'photoCaption', 'authorUid', 'authorEmail', 'authorName', 'createdAt', 'updatedAt']) &&
+        data.id is string && data.id.size() >= 1 && data.id.size() <= 128 &&
+        data.title is string && data.title.size() >= 1 && data.title.size() <= 200 &&
+        data.memoryDate is string && data.memoryDate.matches('^\\d{4}-\\d{2}-\\d{2}$') &&
+        data.description is string && data.description.size() >= 1 && data.description.size() <= 30000 &&
+        data.location is string && data.location.size() <= 150 &&
+        data.photoUrl is string && data.photoUrl.size() <= 800000 &&
+        data.photoCaption is string && data.photoCaption.size() <= 300 &&
+        data.authorUid is string && data.authorUid == request.auth.uid &&
+        data.authorEmail is string && data.authorEmail.size() <= 128 &&
+        data.authorName is string && data.authorName.size() <= 100 &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
+    match /memories/{memoryId} {
+      allow get, list: if isAuthorizedPartner();
+
+      allow create: if isAuthorizedPartner() &&
+        isValidId(memoryId) &&
+        isValidMemory(incoming()) &&
+        incoming().id == memoryId &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time;
+
+      allow update: if isAuthorizedPartner() &&
+        isValidId(memoryId) &&
+        existing().authorUid == request.auth.uid &&
+        isValidMemory(incoming()) &&
+        incoming().id == existing().id &&
+        incoming().authorUid == existing().authorUid &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['title', 'memoryDate', 'description', 'location', 'photoUrl', 'photoCaption', 'authorName', 'updatedAt']);
+
+      allow delete: if isAuthorizedPartner() &&
+        isValidId(memoryId) &&
+        existing().authorUid == request.auth.uid;
+    }
+
+    // 4. Dreams and Promises Collection
+    function isValidDreamPromise(data) {
+      return data.keys().hasAll(['id', 'type', 'title', 'description', 'targetDate', 'status', 'fulfilledDate', 'authorUid', 'authorEmail', 'authorName', 'createdAt', 'updatedAt']) &&
+        data.keys().hasOnly(['id', 'type', 'title', 'description', 'targetDate', 'status', 'fulfilledDate', 'authorUid', 'authorEmail', 'authorName', 'createdAt', 'updatedAt']) &&
+        data.id is string && data.id.size() >= 1 && data.id.size() <= 128 &&
+        (data.type == 'dream' || data.type == 'promise') &&
+        data.title is string && data.title.size() >= 1 && data.title.size() <= 200 &&
+        data.description is string && data.description.size() >= 1 && data.description.size() <= 20000 &&
+        data.targetDate is string && data.targetDate.size() <= 20 &&
+        (data.status == 'envisioned' || data.status == 'in_progress' || data.status == 'fulfilled') &&
+        data.fulfilledDate is string && data.fulfilledDate.size() <= 20 &&
+        data.authorUid is string && data.authorUid == request.auth.uid &&
+        data.authorEmail is string && data.authorEmail.size() <= 128 &&
+        data.authorName is string && data.authorName.size() <= 100 &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
+    match /dreams_promises/{dreamId} {
+      allow get, list: if isAuthorizedPartner();
+
+      allow create: if isAuthorizedPartner() &&
+        isValidId(dreamId) &&
+        isValidDreamPromise(incoming()) &&
+        incoming().id == dreamId &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time;
+
+      allow update: if isAuthorizedPartner() &&
+        isValidId(dreamId) &&
+        existing().authorUid == request.auth.uid &&
+        isValidDreamPromise(incoming()) &&
+        incoming().id == existing().id &&
+        incoming().authorUid == existing().authorUid &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['type', 'title', 'description', 'targetDate', 'status', 'fulfilledDate', 'authorName', 'updatedAt']);
+
+      allow delete: if isAuthorizedPartner() &&
+        isValidId(dreamId) &&
+        existing().authorUid == request.auth.uid;
+    }
+
+    // 5. Special Dates Collection
+    function isValidSpecialDate(data) {
+      return data.keys().hasAll(['id', 'title', 'category', 'eventDate', 'notes', 'isRecurringAnnually', 'authorUid', 'authorEmail', 'authorName', 'createdAt', 'updatedAt']) &&
+        data.keys().hasOnly(['id', 'title', 'category', 'eventDate', 'notes', 'isRecurringAnnually', 'authorUid', 'authorEmail', 'authorName', 'createdAt', 'updatedAt']) &&
+        data.id is string && data.id.size() >= 1 && data.id.size() <= 128 &&
+        data.title is string && data.title.size() >= 1 && data.title.size() <= 200 &&
+        (data.category == 'anniversary' || data.category == 'birthday' || data.category == 'first_date' || data.category == 'milestone' || data.category == 'other') &&
+        data.eventDate is string && data.eventDate.matches('^\\d{4}-\\d{2}-\\d{2}$') &&
+        data.notes is string && data.notes.size() <= 5000 &&
+        data.isRecurringAnnually is bool &&
+        data.authorUid is string && data.authorUid == request.auth.uid &&
+        data.authorEmail is string && data.authorEmail.size() <= 128 &&
+        data.authorName is string && data.authorName.size() <= 100 &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
+    match /special_dates/{dateId} {
+      allow get, list: if isAuthorizedPartner();
+
+      allow create: if isAuthorizedPartner() &&
+        isValidId(dateId) &&
+        isValidSpecialDate(incoming()) &&
+        incoming().id == dateId &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time;
+
+      allow update: if isAuthorizedPartner() &&
+        isValidId(dateId) &&
+        existing().authorUid == request.auth.uid &&
+        isValidSpecialDate(incoming()) &&
+        incoming().id == existing().id &&
+        incoming().authorUid == existing().authorUid &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['title', 'category', 'eventDate', 'notes', 'isRecurringAnnually', 'authorName', 'updatedAt']);
+
+      allow delete: if isAuthorizedPartner() &&
+        isValidId(dateId) &&
+        existing().authorUid == request.auth.uid;
+    }
+  }
+}

@@ -1,0 +1,353 @@
+{
+  "entities": {
+    "diary_entry": {
+      "title": "Diary Entry",
+      "description": "A private daily journal entry shared between two partners.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the diary entry",
+          "maxLength": 128
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the diary entry",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "date": {
+          "type": "string",
+          "description": "Selected entry date in ISO format (YYYY-MM-DD)",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        },
+        "text": {
+          "type": "string",
+          "description": "Full verbatim content of the diary entry written by the partner",
+          "minLength": 1,
+          "maxLength": 50000
+        },
+        "authorUid": {
+          "type": "string",
+          "description": "Firebase Auth UID of the author partner",
+          "maxLength": 128
+        },
+        "authorEmail": {
+          "type": "string",
+          "description": "Google email address of the author partner",
+          "maxLength": 128
+        },
+        "authorName": {
+          "type": "string",
+          "description": "Display name of the author partner",
+          "maxLength": 100
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server creation timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server last updated timestamp"
+        }
+      },
+      "required": ["id", "title", "date", "text", "authorUid", "authorEmail", "authorName", "createdAt", "updatedAt"]
+    },
+    "letter": {
+      "title": "Letter to You",
+      "description": "A long-form intimate love letter sent between the partners.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the letter",
+          "maxLength": 128
+        },
+        "title": {
+          "type": "string",
+          "description": "Subject or title of the letter",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "letterDate": {
+          "type": "string",
+          "description": "Date written (YYYY-MM-DD)",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        },
+        "content": {
+          "type": "string",
+          "description": "Full verbatim body of the personal letter",
+          "minLength": 1,
+          "maxLength": 60000
+        },
+        "senderUid": {
+          "type": "string",
+          "description": "Firebase Auth UID of the sender partner",
+          "maxLength": 128
+        },
+        "senderEmail": {
+          "type": "string",
+          "description": "Email of the sender partner",
+          "maxLength": 128
+        },
+        "senderName": {
+          "type": "string",
+          "description": "Display name of the sender partner",
+          "maxLength": 100
+        },
+        "recipientName": {
+          "type": "string",
+          "description": "Name or term of endearment for the recipient",
+          "maxLength": 100
+        },
+        "paperStyle": {
+          "type": "string",
+          "description": "Stationery theme style (parchment, vintage-rose, midnight, pressed-petals)",
+          "maxLength": 50
+        },
+        "isSealed": {
+          "type": "boolean",
+          "description": "Whether the letter is sealed with a wax seal"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server creation timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server last updated timestamp"
+        }
+      },
+      "required": ["id", "title", "letterDate", "content", "senderUid", "senderEmail", "senderName", "recipientName", "paperStyle", "isSealed", "createdAt", "updatedAt"]
+    },
+    "memory": {
+      "title": "Memory",
+      "description": "A shared milestone memory with date, description, and optional photo.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the memory",
+          "maxLength": 128
+        },
+        "title": {
+          "type": "string",
+          "description": "Memory headline",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "memoryDate": {
+          "type": "string",
+          "description": "Date of the memory (YYYY-MM-DD)",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed story and sentiment of the memory",
+          "minLength": 1,
+          "maxLength": 30000
+        },
+        "location": {
+          "type": "string",
+          "description": "Location where the memory happened",
+          "maxLength": 150
+        },
+        "photoUrl": {
+          "type": "string",
+          "description": "Optional photograph data URL or web image URL",
+          "maxLength": 800000
+        },
+        "photoCaption": {
+          "type": "string",
+          "description": "Optional caption for the photograph",
+          "maxLength": 300
+        },
+        "authorUid": {
+          "type": "string",
+          "description": "Firebase Auth UID of the creator partner",
+          "maxLength": 128
+        },
+        "authorEmail": {
+          "type": "string",
+          "description": "Email of the creator partner",
+          "maxLength": 128
+        },
+        "authorName": {
+          "type": "string",
+          "description": "Display name of the author partner",
+          "maxLength": 100
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server creation timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server last updated timestamp"
+        }
+      },
+      "required": ["id", "title", "memoryDate", "description", "location", "photoUrl", "photoCaption", "authorUid", "authorEmail", "authorName", "createdAt", "updatedAt"]
+    },
+    "dream_promise": {
+      "title": "Dream or Promise",
+      "description": "A mutual vision, shared dream, or sacred promise between the two partners.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the item",
+          "maxLength": 128
+        },
+        "type": {
+          "type": "string",
+          "description": "Whether this is a dream or a promise",
+          "enum": ["dream", "promise"]
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the dream or promise",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "description": {
+          "type": "string",
+          "description": "Details, meaning, and commitments",
+          "minLength": 1,
+          "maxLength": 20000
+        },
+        "targetDate": {
+          "type": "string",
+          "description": "Target date or timeline milestone (YYYY-MM-DD or empty)",
+          "maxLength": 20
+        },
+        "status": {
+          "type": "string",
+          "description": "Current status of the dream/promise",
+          "enum": ["envisioned", "in_progress", "fulfilled"]
+        },
+        "fulfilledDate": {
+          "type": "string",
+          "description": "Date when fulfilled or empty",
+          "maxLength": 20
+        },
+        "authorUid": {
+          "type": "string",
+          "description": "Firebase Auth UID of the author partner",
+          "maxLength": 128
+        },
+        "authorEmail": {
+          "type": "string",
+          "description": "Email of the author partner",
+          "maxLength": 128
+        },
+        "authorName": {
+          "type": "string",
+          "description": "Display name of the author partner",
+          "maxLength": 100
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server creation timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server last updated timestamp"
+        }
+      },
+      "required": ["id", "type", "title", "description", "targetDate", "status", "fulfilledDate", "authorUid", "authorEmail", "authorName", "createdAt", "updatedAt"]
+    },
+    "special_date": {
+      "title": "Special Date",
+      "description": "Significant anniversary, birthday, first milestone, or romantic holiday.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the special date",
+          "maxLength": 128
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the special occasion",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "category": {
+          "type": "string",
+          "description": "Category of the date",
+          "enum": ["anniversary", "birthday", "first_date", "milestone", "other"]
+        },
+        "eventDate": {
+          "type": "string",
+          "description": "Date of the event (YYYY-MM-DD)",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Sweet memories, ideas, or notes about this date",
+          "maxLength": 5000
+        },
+        "isRecurringAnnually": {
+          "type": "boolean",
+          "description": "Whether this date repeats every year"
+        },
+        "authorUid": {
+          "type": "string",
+          "description": "Firebase Auth UID of the partner who recorded the date",
+          "maxLength": 128
+        },
+        "authorEmail": {
+          "type": "string",
+          "description": "Email of the author partner",
+          "maxLength": 128
+        },
+        "authorName": {
+          "type": "string",
+          "description": "Display name of the author partner",
+          "maxLength": 100
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server creation timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server last updated timestamp"
+        }
+      },
+      "required": ["id", "title", "category", "eventDate", "notes", "isRecurringAnnually", "authorUid", "authorEmail", "authorName", "createdAt", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/diary_entries/{entryId}": {
+      "schema": "diary_entry",
+      "description": "Daily private diary entries recorded by either of the two partners."
+    },
+    "/letters/{letterId}": {
+      "schema": "letter",
+      "description": "Intimate personal letters exchanged between the two partners."
+    },
+    "/memories/{memoryId}": {
+      "schema": "memory",
+      "description": "Romantic memories with story and optional photograph."
+    },
+    "/dreams_promises/{dreamId}": {
+      "schema": "dream_promise",
+      "description": "Shared dreams, milestones, and solemn promises between partners."
+    },
+    "/special_dates/{dateId}": {
+      "schema": "special_date",
+      "description": "Special anniversaries, birthdays, and relationship milestones."
+    }
+  }
+}

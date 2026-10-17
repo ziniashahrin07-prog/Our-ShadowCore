@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    background-color: #FAF6F0;
+    color: #38272A;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  }
+
+  h1, h2, h3, .font-serif-romantic {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+
+  .font-script-calligraphy {
+    font-family: 'Alex Brush', cursive;
+  }
+
+  .font-literature {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+  }
+}
+
+/* Subtle Romantic Paper Texture & Stationeries */
+.bg-parchment {
+  background-color: #FAF5EC;
+  background-image: radial-gradient(#F0E5D3 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+.bg-rose-petal {
+  background: linear-gradient(135deg, #FFF8F7 0%, #FAEDEC 50%, #FFF5F2 100%);
+}
+
+.bg-midnight-velvet {
+  background: linear-gradient(135deg, #1C1319 0%, #2A1725 60%, #170F15 100%);
+  color: #F8E7ED;
+}
+
+.bg-pressed-petals {
+  background-color: #FCF8F5;
+  background-image: radial-gradient(#F5D8DE 0.8px, transparent 0);
+  background-size: 18px 18px;
+}
+
+/* Wax Seal Style */
+.wax-seal {
+  background: radial-gradient(circle at 35% 35%, #9E2A44, #591024);
+  box-shadow: 0 4px 10px rgba(89, 16, 36, 0.35), inset 0 2px 3px rgba(255, 255, 255, 0.25);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F4ECE1;
+}
+::-webkit-scrollbar-thumb {
+  background: #D9B7B7;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #BF8E95;
+}
