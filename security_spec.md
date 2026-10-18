@@ -3,7 +3,7 @@
 ## 1. System Invariants & Access Control Model
 Our ShadowCore is an ultra-private romantic journal restricted exclusively to **exactly two authorized Google accounts**:
 - Partner 1: `ziniashahrin07@gmail.com`
-- Partner 2: `partner2@example.com` (placeholder configuration)
+- Partner 2: `ommersannyr@gmail.com` (placeholder configuration)
 
 ### Security Invariants:
 1. **Zero Public Access**: Unauthenticated requests are rejected immediately across all endpoints.
