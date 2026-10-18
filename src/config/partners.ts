@@ -14,7 +14,7 @@ export const AUTHORIZED_PARTNERS = [
   },
   {
     role: 'Partner 2',
-    email: 'partner2@example.com', // Placeholder: Update this with your partner's Google account email
+    email: 'omersannyr@gmail.com', // Placeholder: Update this with your partner's Google account email
     label: 'Beloved Partner',
   },
 ] as const;
