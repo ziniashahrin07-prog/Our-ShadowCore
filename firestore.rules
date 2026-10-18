@@ -29,7 +29,7 @@ service cloud.firestore {
         request.auth.token.email_verified == true &&
         (
           request.auth.token.email.lower() == 'ziniashahrin07@gmail.com' ||
-          request.auth.token.email.lower() == 'partner2@example.com'
+          request.auth.token.email.lower() == 'omersannyr@gmail.com'
         );
     }
 
